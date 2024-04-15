@@ -34,9 +34,6 @@ form.addEventListener("submit", async function (event) {
       sessionStorage.setItem("username", username);
       sessionStorage.setItem("monthlyIncome", monthlyIncome);
 
-      // localStorage.setItem("token", data.body.token);
-      // localStorage.setItem("data_user", JSON.stringify(formData));
-
       window.location.href = "dashboard.html";
     })
     .catch((error) => {
