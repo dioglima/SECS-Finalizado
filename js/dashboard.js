@@ -77,7 +77,7 @@ async function getCategories() {
       .then((data) => {
         const categoriesData = data.body;
   
-        const categoriesChildes = categoriesData.map((category, index) => {
+        const categoriesChildes = categoriesData.map((category) => {
           const li = document.createElement("li");
           li.setAttribute("class", "category");
   
@@ -182,27 +182,27 @@ async function getBiggestExpenseMonth() {
   
         if(expensesMonth.length > 0) {
           // Ordenar as despesas em ordem decrescente com base no valor
-          expenses.sort((a, b) => b.value - a.value);
+          expensesMonth.sort((a, b) => b.value - a.value);
   
-          let topExpenses = [];
+          let topExpensesMonth = [];
     
-          if(expenses.length >= 7) {
-            topExpenses = expenses.slice(0, 7);
+          if(expensesMonth.length > 7) {
+            topExpensesMonth = expensesMonth.slice(0, 7);
           } else {
-            topExpenses = expenses.slice(0, expenses.length);
+            topExpensesMonth = expensesMonth;
           }
   
-          const biggestExpenseChildes = topExpenses.map((topExpense) => {    
+          const biggestExpenseChildes = topExpensesMonth.map((topExpenseMonth) => {    
             const li = document.createElement("li");
   
             const span = document.createElement("span");
             const img = document.createElement("img");
             img.setAttribute("src", "./assets/elipse-azul.svg");
             span.appendChild(img);
-            span.innerHTML += `${topExpense.description}`;      
+            span.innerHTML += `${topExpenseMonth.description}`;    
     
             const span02 = document.createElement("span");
-            span02.textContent = `R$ ${topExpense.value}`;
+            span02.textContent = `R$ ${topExpenseMonth.value}`;
     
             li.appendChild(span);
             li.appendChild(span02);
