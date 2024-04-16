@@ -101,7 +101,7 @@ body button:hover {
 body .ilustration-section {
   width: 65%;
   height: 100%;
-  background-image: url('/assets/Ilustração.svg');
+  background-image: url('../assets/Ilustração.svg');
   background-position: center; /* Center the image */
   background-repeat: no-repeat; 
   /* Do not repeat the image */
@@ -111,7 +111,6 @@ body .ilustration-section {
 }
 
 body .ilustration-section img{
-  
   position: absolute;
   bottom: 55px;
   right: 51px;

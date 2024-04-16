@@ -1,11 +1,10 @@
 const url = "https://poupe-mais-api.vercel.app";
 
-const form = document.getElementById("login-form"); //acessando métodos e propriedades do formulário, não acessa de fato é com se fosse um atalho para aquele elemento
+const form = document.getElementById("login-form"); 
 const message = document.getElementById("error-message");
 
-//criando um método que escuta um evento e apartir de um evento executa uma ação
 form.addEventListener("submit", async function (event) {
-  event.preventDefault(); // Evita que a página recarregue
+  event.preventDefault();
 
   const username = document.getElementById("user").value;
   const email = document.getElementById("email").value;
@@ -18,7 +17,7 @@ form.addEventListener("submit", async function (event) {
   await fetch(`${url}/user/sign-in`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json", // Example content type
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ username, email }),
   })
@@ -26,17 +25,14 @@ form.addEventListener("submit", async function (event) {
       if (!response.ok) {
         throw new Error(response.statusText);
       }
-      return response.json(); //convertendo a resposta em json para um objeto js
-    }) // Parse the response as JSON
+      return response.json();
+    })
     .then((data) => {
-      console.log(data);
-      const userData = {
-        username: data.body.username,
-        monthlyIncome: data.body.monthlyIncome,
-      };
+      const { username, monthlyIncome, token } = data.body;
 
-      localStorage.setItem("token", data.body.token);
-      localStorage.setItem("data_user", JSON.stringify(userData));
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("username", username);
+      sessionStorage.setItem("monthlyIncome", monthlyIncome);
 
       window.location.href = "dashboard.html";
     })
