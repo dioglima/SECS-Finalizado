@@ -2,153 +2,166 @@ const url = "https://poupe-mais-api.vercel.app";
 const token = sessionStorage.getItem("token");
 
 function logout() {
-    sessionStorage.clear();
-    window.location.href = "index.html";
+  sessionStorage.clear();
+  window.location.href = "index.html";
 }
 
 const logoutBtn = document.getElementById("logout-btn");
 
 logoutBtn.addEventListener("click", function (event) {
-    event.preventDefault();
-    logout();
+  event.preventDefault();
+  logout();
 });
 
 // Obter os dados do usuário
 async function getUserData() {
-    const usernameElement = document.getElementById("username");
-    const incomeElement = document.getElementById("total-incomes");
-    const expenseElement = document.getElementById("total-expense");
-    const totalElement = document.getElementById("monthly-income");
+  const usernameElement = document.getElementById("username");
+  const incomeElement = document.getElementById("total-incomes");
+  const expenseElement = document.getElementById("total-expense");
+  const totalElement = document.getElementById("monthly-income");
 
-    const username = sessionStorage.getItem("username");
-    usernameElement.textContent = username; 
-    
-    await fetch(`${url}/transaction/list`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-    })
+  const username = sessionStorage.getItem("username");
+  usernameElement.textContent = username;
+
+  await fetch(`${url}/transaction/list`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then(function (response) {
-        if (!response.ok) { throw new Error(response.statusText) }
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
 
-        return response.json();
+      return response.json();
     })
     .then(function (data) {
-        const transactions = data.body;
+      const transactions = data.body;
 
-        const incomes = transactions.filter(({ type }) => type === "INCOME");
-        const expenses = transactions.filter(({ type }) => type === "EXPENSE");
+      const incomes = transactions.filter(({ type }) => type === "INCOME");
+      const expenses = transactions.filter(({ type }) => type === "EXPENSE");
 
-        const totalIncomes = incomes.reduce((accumulator, currentValue) => { return accumulator + currentValue.value }, 0);
-        const totalExpenses = expenses.reduce((accumulator, currentValue) => { return accumulator + currentValue.value }, 0);
-        const total = totalIncomes - totalExpenses;
+      const totalIncomes = incomes.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.value;
+      }, 0);
+      const totalExpenses = expenses.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.value;
+      }, 0);
+      const total = totalIncomes - totalExpenses;
 
-        incomeElement.innerHTML = `<span>+ R$ ${totalIncomes}</span>`;
-        expenseElement.innerHTML = `<span>- R$ ${totalExpenses}</span>`;
-        totalElement.innerHTML = `<span>R$ ${total}</span>`;
+      incomeElement.innerHTML = `<span>+ R$ ${totalIncomes}</span>`;
+      expenseElement.innerHTML = `<span>- R$ ${totalExpenses}</span>`;
+      totalElement.innerHTML = `<span>R$ ${total}</span>`;
+
+      const color = document.getElementById("monthly-income");
+      if (total < 0) {
+        color.style.color = "red";
+      } else if (total > 0) {
+        color.style.color = "green ";
+      }
     })
     .catch(function (error) {
-        console.error(error);
-    })
+      console.error(error);
+    });
 }
 
 getUserData();
 
 // Obter categorias
 async function getCategories() {
-    const categories = document.querySelector(".categories");
-  
-    await fetch(`${url}/category/list`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+  const categories = document.querySelector(".categories");
+
+  await fetch(`${url}/category/list`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
       }
+
+      return response.json();
     })
-      .then((response) => {
-        if(!response.ok) {
-          throw new Error(response.statusText);
-        }
-  
-        return response.json();
-      })
-      .then((data) => {
-        const categoriesData = data.body;
-  
-        const categoriesChildes = categoriesData.map((category) => {
-          const li = document.createElement("li");
-          li.setAttribute("class", "category");
-  
-          const img = document.createElement("img");
-          img.setAttribute("src", "./assets/elipse-verde.svg");
-          img.setAttribute("alt", "Elipse Verde");
-  
-          const span = document.createElement("span");
-          span.textContent = category.categoryName;
-          
-          li.appendChild(img);
-          li.appendChild(span);
-  
-          return li;
-        });
-  
-        const liCadastrarCategoria = document.createElement("li");
-        liCadastrarCategoria.setAttribute("class", "btn-new-categorie");
-  
+    .then((data) => {
+      const categoriesData = data.body;
+
+      const categoriesChildes = categoriesData.map((category) => {
+        const li = document.createElement("li");
+        li.setAttribute("class", "category");
+
         const img = document.createElement("img");
-        img.setAttribute("src", "./assets/elipse-azul-2.svg");
-        img.setAttribute("alt", "Elipse Azul");
-  
+        img.setAttribute("src", "./assets/elipse-verde.svg");
+        img.setAttribute("alt", "Elipse Verde");
+
         const span = document.createElement("span");
-        span.textContent = "Cadastrar nova categoria";
-  
-        liCadastrarCategoria.appendChild(img);
-        liCadastrarCategoria.appendChild(span);
-  
-        categories.append(...categoriesChildes);
-        categories.appendChild(liCadastrarCategoria);
-      })
-      .catch((error) => {
-        console.error("this", error);
+        span.textContent = category.categoryName;
+
+        li.appendChild(img);
+        li.appendChild(span);
+
+        return li;
       });
+
+      const liCadastrarCategoria = document.createElement("li");
+      liCadastrarCategoria.setAttribute("class", "btn-new-categorie");
+
+      const img = document.createElement("img");
+      img.setAttribute("src", "./assets/elipse-azul-2.svg");
+      img.setAttribute("alt", "Elipse Azul");
+
+      const span = document.createElement("span");
+      span.textContent = "Cadastrar nova categoria";
+
+      liCadastrarCategoria.appendChild(img);
+      liCadastrarCategoria.appendChild(span);
+
+      categories.append(...categoriesChildes);
+      categories.appendChild(liCadastrarCategoria);
+    })
+    .catch((error) => {
+      console.error("this", error);
+    });
 }
 
 getCategories();
-  
+
 // Obter opções
 async function getOptions() {
-    const categorySelect = document.getElementById("category-select");
+  const categorySelect = document.getElementById("category-select");
 
-    await fetch(`${url}/category/list`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    })
+  await fetch(`${url}/category/list`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
     .then((response) => {
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
 
-        return response.json();
+      return response.json();
     })
     .then((data) => {
-        const categories = data.body;
+      const categories = data.body;
 
-        const options = categories.map((category) => {
-            const novaOpcao = document.createElement("option");
-            novaOpcao.value = category.id;
-            novaOpcao.textContent = category.categoryName;
-            return novaOpcao;
-        });
+      const options = categories.map((category) => {
+        const novaOpcao = document.createElement("option");
+        novaOpcao.value = category.id;
+        novaOpcao.textContent = category.categoryName;
+        return novaOpcao;
+      });
 
-        categorySelect.append(...options);
+      categorySelect.append(...options);
     })
     .catch((error) => {
-        console.error("this", error);
+      console.error("this", error);
     });
 }
 
@@ -156,81 +169,84 @@ getOptions();
 
 // Obter os maiores gastos do mês
 async function getBiggestExpenseMonth() {
-    await fetch(`${url}/transaction/list`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
+  await fetch(`${url}/transaction/list`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
       }
+
+      return response.json();
     })
-      .then((response) => {
-        if(!response.ok) {
-          throw new Error(response.statusText);
+    .then((data) => {
+      const transactions = data.body;
+      const biggestExpenses = document.querySelector("#biggest-expenses");
+
+      const expenses = transactions.filter(
+        (transaction) => transaction.type === "EXPENSE"
+      );
+      const expensesMonth = expenses.filter((expense) => {
+        const month = parseInt(expense.createdAt.split("T")[0].split("-")[1]);
+        return month === new Date().getMonth() + 1;
+      });
+
+      if (expensesMonth.length > 0) {
+        // Ordenar as despesas em ordem decrescente com base no valor
+        expensesMonth.sort((a, b) => b.value - a.value);
+
+        let topExpensesMonth = [];
+
+        if (expensesMonth.length > 7) {
+          topExpensesMonth = expensesMonth.slice(0, 7);
+        } else {
+          topExpensesMonth = expensesMonth;
         }
-  
-        return response.json();
-      })
-      .then((data) => {
-        const transactions = data.body;
-        const biggestExpenses = document.querySelector("#biggest-expenses");
-        
-        const expenses = transactions.filter(transaction => transaction.type === "EXPENSE");
-        const expensesMonth = expenses.filter(expense => {
-          const month = parseInt(expense.createdAt.split("T")[0].split("-")[1]);
-          return month === (new Date().getMonth() + 1);
-        });
-  
-        if(expensesMonth.length > 0) {
-          // Ordenar as despesas em ordem decrescente com base no valor
-          expensesMonth.sort((a, b) => b.value - a.value);
-  
-          let topExpensesMonth = [];
-    
-          if(expensesMonth.length > 7) {
-            topExpensesMonth = expensesMonth.slice(0, 7);
-          } else {
-            topExpensesMonth = expensesMonth;
-          }
-  
-          const biggestExpenseChildes = topExpensesMonth.map((topExpenseMonth) => {    
+
+        const biggestExpenseChildes = topExpensesMonth.map(
+          (topExpenseMonth) => {
             const li = document.createElement("li");
-  
+
             const span = document.createElement("span");
             const img = document.createElement("img");
             img.setAttribute("src", "./assets/elipse-azul.svg");
             span.appendChild(img);
-            span.innerHTML += `${topExpenseMonth.description}`;    
-    
+            span.innerHTML += `${topExpenseMonth.description}`;
+
             const span02 = document.createElement("span");
             span02.textContent = `R$ ${topExpenseMonth.value}`;
-    
+
             li.appendChild(span);
             li.appendChild(span02);
-  
+
             return li;
-          });
-  
-          biggestExpenses.innerHTML = '';
-  
-          biggestExpenses.append(...biggestExpenseChildes);
-        } else {
-          const li = document.createElement("li");
-  
-          li.setAttribute("class", "no-content");
-          li.textContent = "Nenhum gasto encontrado";
-          
-          biggestExpenses.innerHTML = '';
-  
-          biggestExpenses.appendChild(li);
-        }
-      })
-      .catch((error) => {
-        console.error("this", error);
-      });
+          }
+        );
+
+        biggestExpenses.innerHTML = "";
+
+        biggestExpenses.append(...biggestExpenseChildes);
+      } else {
+        const li = document.createElement("li");
+
+        li.setAttribute("class", "no-content");
+        li.textContent = "Nenhum gasto encontrado";
+
+        biggestExpenses.innerHTML = "";
+
+        biggestExpenses.appendChild(li);
+      }
+    })
+    .catch((error) => {
+      console.error("this", error);
+    });
 }
 
 getBiggestExpenseMonth();
-
 
 // Transação income
 const formIncome = document.getElementById("add-income-form");
@@ -309,3 +325,22 @@ formExpense.addEventListener("submit", async (event) => {
       console.error("this", error);
     });
 });
+
+// Saudação
+
+function mensagemDoDia() {
+  var hora = new Date().getHours();
+  var mensagem;
+
+  if (hora >= 6 && hora < 12) {
+    mensagem = "Bom dia!";
+  } else if (hora >= 12 && hora < 18) {
+    mensagem = "Boa tarde!";
+  } else {
+    mensagem = "Boa noite!";
+  }
+
+  document.getElementById("saudacao").innerText = mensagem;
+}
+
+mensagemDoDia();

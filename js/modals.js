@@ -25,3 +25,29 @@ outcomeModal.addEventListener("mousedown", (event) => {
     outcomeModal.close();
   }
 });
+
+const settingsModal = document.getElementById("settings-modal");
+const openSettingsModalBtn = document.getElementById("show-settings-modal");
+
+openSettingsModalBtn.addEventListener("click", () => {
+  settingsModal.showModal();
+});
+
+settingsModal.addEventListener("mousedown", () => {
+  if (event.target === settingsModal) {
+    settingsModal.close();
+  }
+});
+
+const graphModal = document.getElementById("chart-modal");
+const openGraphsModalBtn = document.getElementById("show-chart-modal");
+
+openGraphsModalBtn.addEventListener("click", () => {
+  graphModal.showModal();
+});
+
+graphModal.addEventListener("mousedown", () => {
+  if (event.target === graphModal) {
+    graphModal.close();
+  }
+});

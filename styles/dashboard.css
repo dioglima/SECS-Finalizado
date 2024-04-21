@@ -34,7 +34,7 @@ select {
 }
 
 .confirm-button {
-  font-family: 'poppins';
+  font-family: "poppins";
   background-color: var(--main-green);
   border-radius: 15px;
   border: none;
@@ -407,4 +407,31 @@ footer {
   justify-content: center;
   align-items: center;
   background-color: var(--secondary-dark-color);
+}
+
+.chart {
+  width: 300px;
+  margin: 50px auto;
+}
+
+.bar {
+  height: 30px;
+  margin-bottom: 10px;
+  background-color: #3498db;
+  color: white;
+  line-height: 30px;
+  text-align: right;
+  border-radius: 5px;
+  position: relative;
+}
+
+.bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--value);
+  background-color: #2ecc71;
+  border-radius: 5px;
 }
